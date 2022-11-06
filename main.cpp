@@ -5,23 +5,31 @@ using namespace std;
 
 int GlobalValue = 0;
 
-void Test()
+void Func3 (float a)
 {
-	cout << "전역 변수의 값은 " << GlobalValue << endl;
-	GlobalValue++;
+	cout << "Func3" << endl;
 }
+
+void Func2(int a, int b)
+{
+	cout << "Func2" << endl;
+
+	Func3(10);
+}
+
+void Func1()
+{
+	cout << "Func1" << endl;
+
+	Func2(1, 2);
+}
+
 
 
 int main()
 {
-	cout << "전역 변수의 값은 " << GlobalValue << endl;
-	GlobalValue++;
-	
-	Test();
-
-	//지역변수
-	int localValue = 0;
-
+	cout << "main" << endl;
+	Func1();
 
 	return 0;
 }
