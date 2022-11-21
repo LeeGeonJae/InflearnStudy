@@ -86,6 +86,7 @@ void SelectPlayer()
 			defence = 0;
 			break;
 		}
+
 	}
 
 }
