@@ -10,27 +10,42 @@ enum PlayerType
 	PT_Mage = 3,
 };
 
+enum MonsterType
+{
+	MT_Slime = 1,
+	MT_Orc = 2,
+	MT_Skeleton = 3,
+};
 
-int playerType;
-int hp;
-int attack;
-int defence;
+struct ObjectInfo
+{
+	int Type;
+	int hp;
+	int attack;
+	int defence;
+};
 
+ObjectInfo playerInfo;
+ObjectInfo monsterInfo;
 
 void EnterLobby();
 void SelectPlayer();
+void EnterField();
+void CreateRendomMonster();
+void EnterBattle();
 
 int main()
 {
+	// 랜덤 시드 설정
+	srand(time(0));
+	EnterLobby();
 
 	return 0;
 }
 
 void EnterLobby()
 {
-	int input;
-
-	while (0)
+	while (true)
 	{
 		cout << "--------------------" << endl;
 		cout << "로비에 입장했습니다." << endl;
@@ -43,50 +58,151 @@ void EnterLobby()
 		cout << "(1) 필드 입장 (2) 게임 종료" << endl;
 		cout << "--------------------" << endl;
 
+		int input;
 		cin >> input;
-	}
 
-	if (input == 1)
-	{
-		EnterField();
-	}
-	else
-	{
-		return;
+		if (input == 1)
+		{
+			EnterField();
+		}
+		else
+		{
+			return;
+		}
 	}
 }
 
 void SelectPlayer()
 {
-	while (0)
+	while (true)
 	{
 		cout << "--------------------" << endl;
 		cout << "직업을 골라주세요." << endl;
 		cout << "(1) 기사 (2) 궁수 (3) 법사" << endl;
 		cout << "> ";
 
-		cin >> playerType;
+		cin >> playerInfo.Type;
 
-		switch (playerType)
+		if (playerInfo.Type == 1)
 		{
-		case PT_Knight:
 			cout << "기사 생성중...!" << endl;
-			hp = 150;
-			attack = 10;
-			defence = 5;
-			break;
-		case PT_Archer:
-			hp = 100;
-			attack = 15;
-			defence = 3;
-			break;
-		case PT_Mage:
-			hp = 80;
-			attack = 20;
-			defence = 0;
+			playerInfo.hp = 150;
+			playerInfo.attack = 10;
+			playerInfo.defence = 5;
 			break;
 		}
+		else if (playerInfo.Type == 2)
+		{
+			cout << "궁수 생성중...!" << endl;
+			playerInfo.hp = 100;
+			playerInfo.attack = 15;
+			playerInfo.defence = 3;
+			break;
+		}
+		else if (playerInfo.Type == 3)
+		{
+			cout << "법사 생성중...!" << endl;
+			playerInfo.hp = 80;
+			playerInfo.attack = 20;
+			playerInfo.defence = 0;
+			break;
+		}
+	}
+}
 
+void EnterField()
+{
+	while (true)
+	{
+		cout << "--------------------" << endl;
+		cout << "필드에 입장했습니다!" << endl;
+		cout << "--------------------" << endl;
+
+		cout << "[PLAYER] HP : " << playerInfo.hp << " / ATT" << playerInfo.attack << " / DEF : " << playerInfo.defence << endl;
+
+		CreateRendomMonster();
+
+		cout << "--------------------" << endl;
+		cout << "(1) 전투 (2) 도주" << endl;
+		cout << "> ";
+
+		int input;
+		cin >> input;
+
+		if (input == 1)
+		{
+			EnterBattle();
+			if (playerInfo.hp == 0)
+				return;
+		}
+		else
+		{
+			return;
+		}
+	}
+}
+
+void CreateRendomMonster()
+{
+	monsterInfo.Type = 1 + rand() % 3;
+
+	switch (monsterInfo.Type)
+	{
+	case MT_Slime:
+		cout << "슬라임 생성중...! ( HP:15 / ATT:5 / DEF:0) \n";
+		monsterInfo.hp = 15;
+		monsterInfo.attack = 5;
+		monsterInfo.defence = 0;
+		break;
+	case MT_Orc:
+		cout << "오크 생성중...! ( HP:40 / ATT:10 / DEF:3) \n";
+		monsterInfo.hp = 40;
+		monsterInfo.attack = 10;
+		monsterInfo.defence = 3;
+		break;
+	case MT_Skeleton:
+		cout << "스켈레톤 생성중...! ( HP:80 / ATT:15 / DEF:5) \n";
+		monsterInfo.hp = 80;
+		monsterInfo.attack = 15;
+		monsterInfo.defence = 5;
+		break;
 	}
 
+}
+
+void EnterBattle()
+{
+	while (true)
+	{
+		int damage = playerInfo.attack - monsterInfo.defence;
+		if (damage < 0)
+			damage = 0;
+
+		monsterInfo.hp -= damage;
+		if (monsterInfo.hp < 0)
+			monsterInfo.hp = 0;
+
+		cout << "몬스터 남은 체력 : " << monsterInfo.hp << endl;
+		if (monsterInfo.hp == 0)
+		{
+			cout << "몬스터를 처치했습니다!" << endl;
+			return;
+		}
+
+		damage = monsterInfo.attack - playerInfo.defence;
+		if (damage < 0)
+			damage = 0;
+
+		// 반격
+		playerInfo.hp -= damage;
+		if (playerInfo.hp < 0)
+			playerInfo.hp = 0;
+
+		cout << "플레이어 남은 체력 : " << playerInfo.hp << endl;
+		if (playerInfo.hp == 0)
+		{
+			cout << "당신은 사망했습니다... GAME OVER" << endl;
+			return;
+		}
+	}
 }
