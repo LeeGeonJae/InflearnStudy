@@ -49,9 +49,9 @@ void EnterLobby()
 	// 
 	player = monster;
 
-	//player.hp = monster.hp;
-	//player.attack = monster.attack;
-	//player.defence = monster.defence;
+	// -> player.hp = monster.hp;
+	// -> player.attack = monster.attack;
+	// -> player.defence = monster.defence;
 }
 
 
