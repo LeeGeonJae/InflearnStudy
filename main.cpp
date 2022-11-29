@@ -108,7 +108,8 @@ int main()
 	pointer = &info;
 	PrintInfoByPtr(pointer);
 
-	StatInfo& reference = info;
+	StatInfo& reference;
+	reference = info;
 	PrintInfoByRef(reference);
 
 	// 그래서 결론은?
