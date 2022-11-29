@@ -1,137 +1,115 @@
 #include <iostream>
 using namespace std;
 
-// 오늘의 주제 : 참조 vs 포인터
+// 오늘의 주제 : 배열
 
 struct StatInfo
 {
-	int hp;
-	int attack;
-	int defence;
+	int hp = 0xAAAAAAAA;
+	int attack = 0xBBBBBBBB;
+	int defence = 0xDDDDDDDD;
 };
-
-void CreateMonster(StatInfo* info)
-{
-	info->hp = 40;
-	info->attack = 8;
-	info->defence = 1;
-}
-
-StatInfo* FindMonster()
-{
-	// 1000 : Heap 영역에서 뭔가를 찾아봄
-	// 찾았다 !
-	// return monster-;
-
-	return nullptr;
-}
-
-StatInfo globalInfo;
-
-void PrintInfoByPtr(const StatInfo* const info)
-{
-	// 만약 info가 nullptr이면 오류가 발생하기 때문에 체크해준다.
-	if (info == nullptr)
-		return;
-	
-	cout << "---------------------" << endl;
-	cout << "HP : " << info->hp << endl;
-	cout << "ATT : " << info->attack << endl;
-	cout << "DEF : " << info->defence << endl;
-	cout << "---------------------" << endl;
-
-	// 별 뒤에 붙인다면?
-	// StatInfo* const info
-	// info라는 바구니의 내용물(주소)를 바꿀 수 없음
-	// info는 주소값을 갖는 바구니 -> 이 주소값이 고정이다!
-
-	// 별 이전에 붙인다면?
-	// const StatInfo* info
-	// info가 가리키고 있는 바구니의 내용물을 바꿀 수 없음
-	// '원격' 바구니의 내용물을 바꿀 수 없음
-
-	// info[ 주소값 ]      주소값[ 데이터 ]
-	// StatInfo* const info 일때 변경 불가
-	// info = &globalInfo;
-
-	// const StatInfo* info 일때 변경 불가
-	// info->hp = 1000;
-
-	// const StatInfo* const info 하면 주소값과 바구니 안의 내용물을 못바꾸게 한다.
-}
-
-void PrintInfoByRef(const StatInfo& info)
-{
-	cout << "---------------------" << endl;
-	cout << "HP : " << info.hp << endl;
-	cout << "ATT : " << info.attack << endl;
-	cout << "DEF : " << info.defence << endl;
-	cout << "---------------------" << endl;
-}
-
-#define OUT
-
-void ChangeInfo(OUT StatInfo& info)
-{
-	info.hp = 1000;
-}
 
 int main()
 {
-	StatInfo info;
+	// TYPE 이름[갯수]
 
-	// 포인터 vs 참조
-	// 성능 : 똑같음
-	// 편의성 : 참조 승!
+	// 배열의 크기는 상수여야 함 (VC컴파일러 기준)
+	const int monsterCount = 10;
+	StatInfo monsters[monsterCount];
 
-	// 1) 편의성 관련
-	// 편의성이 좋다는게 꼭 칭찬만은 아니다.
-	// 포인터는 주소를 넘기니 확실하게 원본을 넘긴다는 힌트를 줄 수 있는데
-	// 참조는 자연스럽게 모르고 지나칠 수도 있음
-	// ex) 마음대로 고친다면?
-	// const를 사용해서 이런 마음대로 고치는 부분 개선 가능
+	// 여태껏 변수들의 [이름]은 바구니의 이름이었음
+	int a = 10;
+	int b = a;
 
-	// 참고로 포인터도 const를 사용 가능
-	// * 기준으로 앞에 붙이느냐 뒤에 붙이느냐에 따라 의미가 달라진다.
+	// 그런데 배열은 [이름] 조금 다르게 동작한다
+	//StatInfo players[10];
+	// players = monsters;
 
-	
-	// 2) 초기화 여부
-	// 참조 타입은 바구니의 2번째 이름 (별칭?)
-	// -> 참조하는 대상이 없으면 안됨
-	// 반면 포인터는 그냥 어떤 주소라는 의미
-	// -> 대상이 실존하지 않을 수도 있음
-	// 포인터에서 '없다'는 의미로? nullptr
-	// 참조 타입은 이런 nullptr
+	// 그럼 배열의 이름은 뭐지?
+	// 배열의 이름은 곧 배열의 시작 주소
+	// 정확히는 시작 위치를 가리키는 TYPE* 포인터
+	auto WhoAmI = monsters;
 
-	StatInfo* pointer = nullptr;
-	int a = NULL;
-	pointer = &info;
-	PrintInfoByPtr(pointer);
+	// monster_0 주소 [ (100, 10, 1) ] StatInfo[] StatInfo[] StatInfo[] ....
+	// monster_0 [ 주소 ]
+	StatInfo* monster_0 = monsters;
+	monster_0->hp = 100;
+	monster_0->attack = 10;
+	monster_0->defence = 1;
 
-	StatInfo& reference;
-	reference = info;
-	PrintInfoByRef(reference);
+	// 포인터의 덧셈! 진짜 1을 더하라는게 아니라, StatInfo 타입 바구니 한개씩 이동하라는 의미
+	// StatInfo [  ] monster_1 주소[ (200, 20, 2) ] StatInfo[] StatInfo[] ....
+	// monster_1 [ 주소 ]
+	StatInfo* monster_1 = monsters + 1;
+	monster_1->hp = 200;
+	monster_1->attack = 20;
+	monster_1->defence = 2;
 
-	// 그래서 결론은?
-	// 사실 Team By Team... 정해진 답은 없다.
-	// ex) 구글에서 만든 오픈소스를 보면 거의 무조건 포인터를 사용
-	// ex) 언리얼 엔진에선 reference도 애용
+	// 포인터와 참조는 자유자재로 변환이 가능하다
+	// StatInfo [  ] StatInfo[  ] 주소[ (300, 30, 3) ] StatInfo[] ....
+	// monster_2 [ 주소 ]
+	StatInfo& monster_2 = *(monsters + 2);
+	monster_2.hp = 300;
+	monster_2.attack = 30;
+	monster_2.defence = 3;
 
-	// Rookiss 선호 스타일)
-	// - 없는 경우도 고려해야 한다면 pointer (null 체크 필수)
-	// - 바뀌지 않고 읽는 용도(readonly)만 사용하면 const ref&
-	// - 그 외 일반적으로 ref (임시적으로 호출할 때 OUT을 붙인다)
-	// 가독성 측면에서 OUT을 쓰는데 실제로 아무 기능은 없다.
-	// -- 단 다른 사람이 pointer를 만들어놓은걸 이어서 만든다면, 계속 pointer (섞어 사용하진 않는다)
-	ChangeInfo(OUT info);
+	// [주의] 이거는 완전 다른 의미다.
+	// StatInfo [  ] StatInfo[  ] 주소[ 내용물 ] StatInfo[] ....
+	// temp [ 내용물 ]
+	// 해당 주소안에 있는 값읇 변경하는 것이 아닌 temp 내부의 값만 바뀐다.
+	StatInfo temp;
+	temp = *(monsters + 2);
 
-	// Bonus) 포인터로 사용하던걸 참조로 넘겨주려면?
-	// pointer[ 주소(&info) ]  ref. info[ 데이터 ]
-	PrintInfoByRef(*pointer);
+	cout << monster_2.hp << " : " << temp.hp << endl;
 
-	// Bonus) 참조로 사용하던걸 포인터로 넘겨주려면?
-	// pointer[ 주소 ]  reference. info[ 데이터 ]
-	PrintInfoByPtr(&reference);
+	temp.hp = 400;
+	temp.attack = 40;
+	temp.defence = 4;
+
+	cout << monster_2.hp << " : " << temp.hp << endl;
+
+	// 이를 조금 더 자동화한다!
+	for (int i = 0; i < 10; i++)
+	{
+		StatInfo& monster = *(monsters + i);
+		monster.hp = 100 * ( i + 1 );
+		monster.attack = 10 * (i + 1);
+		monster.defence = 1 * (i + 1);
+	}
+
+	// 근데 *(monsters + i) 너무 불편하고 가독성이 떨어진다... 더 편한 방법?
+	// 인덱스!
+	// 배열은 0번부터 시작. N번째 인덱스에 해당하는 데이터에 접근하려면 배열이름[N]
+	// *(monster + i) = monsters[i]
+
+	monsters[0].hp = 100;
+	monsters[0].attack = 10;
+	monsters[0].defence = 1;
+
+	for (int i = 0; i < 10; i++)
+	{
+		monsters[i].hp = 100 * (i + 1);
+		monsters[i].attack = 10 * (i + 1);
+		monsters[i].defence = 1 * (i + 1);
+	}
+
+	// 배열 초기화 문법 몇가지
+	// 
+	int numbers[5] = {}; // 다 0으로 밀어버린다.
+	int numbers1[10] = { 1,2,3,4,5 }; // 설정한 애들은 설정한 값들로, 나머지 값들은 0으로 초기화
+	int numbers2[] = { 1,2,3,4,11,223,432,12,3 }; // 데이터 갯수에 따라 배열의 크기를 잡아준다.
+
+	char helloStr[] = { 'H','e','l','l','o','\n'};
+	cout << helloStr << endl;
+
+	// 배열 요약 :
+	// 1) 선언한다
+	int arr[10] = {};
+
+	// 2) 인덱스로 접근해서 사용
+	arr[1] = 1;
+	cout << arr[1] << endl;
 
 	return 0;
 }
