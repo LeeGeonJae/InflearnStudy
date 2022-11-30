@@ -2,60 +2,65 @@
 
 using namespace std;
 
-// 오늘의 주제 : 다중 포인터
+// 오늘의 주제 : 다차원 배열
 
-void SetNumber(int* a)
-{
-	*a = 1;
-}
-
-void SetMessage(const char* a)
-{
-	a = "Bye";
-}
-
-void SetMassage(const char** a)
-{
-	// const char* msg의 주소값을 "Bye" 를 향하는 주소값으로 바꾼다.
-	*a = "Bye";
-}
-
-void SetMessage2(const char*& a)
-{
-	a = "Wow";
-}
 
 int main()
 {
-	int a = 0;
-	SetNumber(&a);
-	cout << a << endl;
+	int a[10] = { 1,2,3 };
 
-	// .rdata	Hello주소[H][e][l][l][o][\0]
-	// .rdata	Bye주소[B][y][e][\0]
-	// msg[ Hello주소 ] << 8바이트
-	const char* msg = "Hello";
+	// [ ] [ ] [ ] [ ] [ ] << 0층
+	// [ ] [ ] [ ] [ ] [ ] << 1층
 
-	// [매개변수][RET][지역변수(msg(Hello주소))][매개변수(a(Bye주소))][RET][지역변수]
-	SetMessage(msg);
-	cout << msg << endl; 
+	int first[5] = { 4,2,3,4,1 };
+	int second[5] = { 1,1,5,2,4 };
 
-	// .rdata	Hello주소[H][e][l][l][o][\0]
-	// 주소1[ Hello주소 ] << 8바이트
-	// pp[ &msg ] << 8바이트
-	const char** pp = &msg;
+	int apartment2D[2][5] = { {4,2,3,4,1},{1,1,5,2,2} };
 
-	// [매개변수][RET][지역변수(msg(Hello주소))][매개변수(a(msg의 주소))][RET][지역변수]
-	SetMassage(&msg);
-	cout << msg << endl;
+	for (int floor = 0; floor < 2; floor++)
+	{
+		for (int room = 0; room < 5; room++)
+		{
+			// apartment2D + (floor * 20) + 4 * room를 한 주소
+			int num = apartment2D[floor][room];
+			cout << num << " ";
+		}
+		cout << endl;
+	}
 
-	// 다중 포인터 : 혼동스럽다?
-	// 그냥 양파까기라고 생각하면 된다
-	// *을 하나씩 까면서 타고 간다고 생각하면 된다.
+	int apartment1D[10] = { 4,2,3,4,1,1,1,5,2,2 };
 
-	// 다중 포인터를 참조로도 쓸 수 있다.
-	SetMessage2(msg);
-	cout << msg << endl;
+	for (int floor = 0; floor < 2; floor++)
+	{
+		for (int room = 0; room < 5; room++)
+		{
+			int index = (floor * 5) + room;
+			// apartment1D + (floor * 20) + 4 * room을 한 주소
+			int num = apartment1D[index];
+			cout << num << " ";
+		}
+		cout << endl;
+	}
+
+	// 2차 배열은 언제 사용할까? 대표적으로 2D 로그라이크 맵
+	int map[5][5] =
+	{
+		{1,1,1,1,1},
+		{1,0,0,1,1},
+		{0,0,0,0,1},
+		{1,0,0,0,0},
+		{1,1,1,1,1},
+	};
+
+	for (int y = 0; y < 5; y++)
+	{
+		for (int x = 0; x < 5; x++)
+		{
+			int info = map[y][x];
+			cout << info;
+		}
+		cout << endl;
+	}
 
 	return 0;
 }
