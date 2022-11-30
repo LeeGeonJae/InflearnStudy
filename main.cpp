@@ -1,47 +1,95 @@
 #include <iostream>
+
 using namespace std;
 
-// 오늘의 주제 : 포인터 vs 배열
+// 오늘의 주제 : 로또 번호 생성기
 
-void TEST(int a)
+void Swap(int& a, int& b)
 {
-	a++;
+	int temp = a;
+	a = b;
+	b = temp;
 }
 
-// 배열은 함수 인자로 넘기면, 컴파일러가 알아서  포인터로 치환된다 (char[] -> char*)
-// 즉, 배열의 내용 전체를 넘긴게 아니라, 시작 주소(포인터)만 넘긴 것
-void Test(char a[])
+void Sort(int* numbers, int count)
 {
-	a[0] = 'x';
+	for (int i = 0; i < count; i++)
+	{
+		// i번째 값이 가장 좋은 후보라고 가정
+		int best = i;
+
+		// 다른 후보와 비교를 통해 제일 좋은 후보를 찾아나선다
+		for (int j = i + 1; j < count; j++)
+		{
+			if (numbers[j] < numbers[best])
+				best = j;
+		}
+
+		// 제일 좋은 후보와 교체하는 과정 
+		if (i != best)
+			Swap(numbers[i], numbers[best]);
+	}
+}
+
+void ChooseLotto(int numbers[])
+{
+	// TODO : 랜덤으로 1~45 사이의 숫자 6개를 골라주세요!
+
+	int count = 0;
+	while (count != 6)
+	{
+		int RandValue = 1 + (rand() % 45);
+
+		bool found = false;
+		for (int i = 0; i < count; i++)
+		{
+			if (numbers[i] == RandValue)
+			{
+				found = true;
+				break;
+			}
+		}
+
+		if (found == false)
+		{
+			numbers[count] = RandValue;
+			count++;
+		}
+	}
+
+	Sort(numbers, 6);
 }
 
 int main()
 {
-	// .data 주소[H][e][l][l][o][W][o][r][l][d][\0]
-	// test1[ 주소 ] << 8바이트
-	const char* test1 = "Hello World";
+	srand((unsigned)time(0));
 
-	// .data 주소[H][e][l][l][o][W][o][r][l][d][\0]
-	// [H][e][l][l][o][W][o][r][l][d][\0]
-	// test2 = 주소
-	char test2[12] = "Hello World";
-	//test2[0] = 'R';
+	// 1) Swap 함수 만들기
 
-	cout << test2 << endl;
+	int a = 1;
+	int b = 2;
+	Swap(a, b);
+	// a = 2, b = 1
 
-	// 포인터는 [주소를 담는 바구니]
-	// 배열은 [닭장] 즉, 그 자체로 같은 데이터끼리 붙어있는 '바구니 모음'
-	// - 다만 [배열 이름]은 '바구니 모음'의 [시작 주소]
+	cout << a << " : " << b << endl;
 
-	// 배열을 함수의 인자로 넘기게 되면?
+	// 2) 정렬 함수 만들기 (작은 숫자가 먼저 오도록 정렬)
+	int numbers[6] = { 1, 42, 3, 15, 5, 6 };
 
-	int a = 0;
-	TEST(a);
-	cout << a << endl;
+	int size1 = sizeof(numbers); // 6 * 4 = 24
+	int size2 = sizeof(int); // 4
 
-	// test2가 바뀔까? 안바뀔까? -> 바뀐다!
-	Test(test2);
-	cout << test2 << endl;
+	Sort(numbers, sizeof(numbers) / sizeof(int));
+	for (int i = 0; i < 6; i++)
+		cout << numbers[i] << " ";
+	cout << endl;
+
+	// 3) 로또 생성기
+	ChooseLotto(numbers);
+	for (int i = 0; i < 6; i++)
+	{
+		cout << numbers[i] << " ";
+	}
 
 	return 0;
 }
