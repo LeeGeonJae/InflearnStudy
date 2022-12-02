@@ -2,219 +2,159 @@
 
 using namespace std;
 
-// 오늘의 주제 : TEXTRPG2
+// 오늘의 주제 : 연습문제
 
-
-//main
-// - EnterLobby (PlayerInfo)
-// -- CreatePlayer
-// -- EnterGame (MonsterInfo)
-// --- CreateMonsters
-// --- EnterBattle
-
-enum PlayerType
+// 문제1) 문자열 길이를 출력하는 함수
+int StrLen(const char* str)
 {
-	PT_Knight = 1,
-	PT_Archer = 2,
-	PT_Mage = 3,
-};
+	// str이라는 문자열의 길이를 반환
+	int count = 0;
 
-enum MonsterType
+	while (str[count] != '\0')
+		count++;
+
+	return count;
+}
+
+// 문제2) 문자열 복사 함수
+// [H][e][l][l][o]['\0'][][][][][][][][][][][]
+// [H][e][l][l][o]['\0'][][][][][][][][][][][]
+
+// src [ 주소 ]
+char* StrCpy(char* dest, char* src)
 {
-	MT_Slime = 1,
-	MT_Orc = 2,
-	MT_Skeleton = 3,
-};
+	int i = 0;
+	//for (i = 0; i <= StrLen(src); i++)
+	//{
+	//	dest[i] = src[i];
+	//}
 
-struct StatInfo
+	//while (src[i] != '\0')
+	//{
+	//	dest[i] = src[i];
+	//	i++;
+	//}
+
+	//dest[i] = '\0';
+
+	//return dest;
+
+	char* ret = dest;
+
+	while (*src != '\0')
+	{
+		*dest = *src;
+		dest++;
+		src++;
+	}
+
+	*dest = '\0';
+
+	return ret;
+}
+
+// 문제 3) 문자열 덧붙이는 함수
+// [H][e][l][l][o]['\0'][][][][][][][][][][][]
+// [W][o][r][l][d]['\0'][][][][][][][][][][][]
+char* StrCat(char* dest, char* src)
 {
-	int hp = 0;
-	int attack = 0;
-	int defence = 0;
-};
+	// 배열을 이용한 코드
+	//int i = 0;
+	//int len = StrLen(dest);
+	//while (src[i] != '\0')
+	//{
+	//	dest[i + len] = src[i];
+	//	i++;
+	//}
 
-void EnterLobby();
-void PrintMassege(const char* msg);
-void CreatePlayer(StatInfo* playerInfo);
-void PrintStatInfo(const char* name, const StatInfo& info);
-void EnterGame(StatInfo* playerInfo);
-void CreateMonsters(StatInfo monsterInfo[], int Count);
-bool EnterBattle(StatInfo* playerInfo, StatInfo* monsterInfo);
+	//dest[len + i] = '\0';
+	//return dest;
+
+	// 포인터를 이용한 코드
+	char* ret = dest;
+
+	while (*dest != '\0')
+		dest++;
+
+	while (*src != '\0')
+	{
+		*dest = *src;
+		dest++;
+		src++;
+	}
+
+	*dest = '\0';
+	return ret;
+}
 
 
-int main()
+// 문제 4) 두 문자열을 비교하는 함수
+int StrCmp(char* a, char* b)
 {
-	srand((unsigned)time(nullptr));
-	EnterLobby();
+	int i = 0;
+
+	while (a[i] != '\0' || b[i] != '\0')
+	{
+		if (a[i] > b[i])
+		{
+			return 1;
+		}
+		if (a[i] < b[i])
+		{
+			return -1;
+		}
+		i++;
+	}
 
 	return 0;
 }
 
-void EnterLobby()
+// 문제 5) 문자열을 뒤집는 함수
+void ReverseStr(char* str)
 {
-	while (true)
+	// 2
+	int len = StrLen(str);
+
+	for (int i = 0; i < len / 2; i++)
 	{
-		PrintMassege("로비에 입장했습니다");
-
-		// PLAYER
-		// 스택 프레임에 의해 앞에 있는 스택 메모리에 있는 함수에서 다음 함수에게 넘기는 것은 괜찮지만
-		// 함수에서 생성되어 이전 함수에게 넘겨주는 것은 위험하다. 
-		// ( 스택 프레임에 의해 함수가 사용되고 난 후에 메모리가 없어지기 때문 )
-		StatInfo playerInfo;
-		CreatePlayer(&playerInfo);
-		PrintStatInfo("Player", playerInfo);
-
-		EnterGame(&playerInfo);
+		int temp = str[i];
+		str[i] = str[len - i - 1];
+		str[len - i - 1] = temp;
 	}
 }
 
-void PrintMassege(const char* msg)
+#pragma warning(disable: 4996)
+
+int main()
 {
-	cout << "************************" << endl;
-	cout << msg << endl;
-	cout << "************************" << endl;
-}
+	const int BUF_SIZE = 100;
 
-void CreatePlayer(StatInfo* playerInfo)
-{
-	bool ready = false;
+	// [H][e][l][l][o]['\0'][][][][][][][][][][][]
+	char a[BUF_SIZE] = "Hello World";
+	char b[BUF_SIZE] = "Hello";
 
-	while (ready == false)
-	{
-		PrintMassege("캐릭터 생성창");
-		PrintMassege("[1] 기사 [2] 궁수 [3] 법사");
-		cout << "> ";
+	// 문제 1번 출력 - strlen(a) 문자열 a의 길이
+	//int len = StrLen(a);
+	//cout << len << endl;
 
-		int input;
-		cin >> input;
+	// 문제 2번 출력 - strcpy(b, a) 문자열 b에 a를 복사
+	//StrCpy(b, a);
+	//for (int i = 0; i <= StrLen(b); i++)
+	//	cout << b[i];
 
-		switch (input)
-		{
-		case PT_Knight:
-			playerInfo->hp = 100;
-			playerInfo->attack = 10;
-			playerInfo->defence = 5;
-			ready = true;
-			break;
-		case PT_Archer:
-			playerInfo->hp = 80;
-			playerInfo->attack = 15;
-			playerInfo->defence = 3;
-			ready = true;
-			break;
-		case PT_Mage:
-			playerInfo->hp = 50;
-			playerInfo->attack = 25;
-			playerInfo->defence = 1;
-			ready = true;
-			break;
-		default:
-			break;
-		}
+	// 문제 3번 출력 - strcat(a, b) 문자열 a의 뒤에 문자열 b를 복사
+	//StrCat(a, b);
+	//for (int i = 0; i <= StrLen(a); i++)
+	//	cout << a[i];
 
-	}
-}
+	// 문제 4번 출력 - a가 더 크면 1, b가 더 크면 -1, 둘다 같으면 0
+	//int value = StrCmp(a, b);
+	//cout << value << endl;
 
-void PrintStatInfo(const char* name, const StatInfo& info)
-{
-	cout << "**********************" << endl;
-	cout << name << " : HP=" << info.hp << " ATT=" << info.attack << " DEF=" << info.defence << endl;
-	cout << "**********************" << endl;
-}
+	// 문제 5번 출력 - a의 문자열 뒤집기
+	ReverseStr(a);
+	for (int i = 0; i <= strlen(a); i++)
+		cout << a[i];
 
-void EnterGame(StatInfo* playerInfo)
-{
-	const int MONSTER_COUNT = 2;
-
-	PrintMassege("게임에 입장했습니다");
-
-	while (true)
-	{
-		StatInfo monsterInfo[MONSTER_COUNT];
-		CreateMonsters(monsterInfo, MONSTER_COUNT);
-
-		for (int i = 0; i < MONSTER_COUNT; i++)
-			PrintStatInfo("Monster", monsterInfo[i]);
-
-		PrintStatInfo("Player", *playerInfo);
-
-		PrintMassege("[1] 전투 [2] 전투 [3] 도망");
-		int input;
-		cin >> input;
-
-		if (input == 1 || input == 2)
-		{
-			int index = input - 1;
-			bool victory = EnterBattle(playerInfo, &(monsterInfo[index]));
-			if (victory == false)
-				break;
-		}
-	}
-}
-
-void CreateMonsters(StatInfo monsterInfo[], int Count)
-{
-	for (int i = 0; i < Count; i++)
-	{
-		int randValue = 1 + (rand() % 3);
-
-		switch (randValue)
-		{
-		case MT_Slime:
-			monsterInfo[i].hp = 30;
-			monsterInfo[i].attack = 5;
-			monsterInfo[i].defence = 1;
-			break;
-		case MT_Orc:
-			monsterInfo[i].hp = 40;
-			monsterInfo[i].attack = 8;
-			monsterInfo[i].defence = 2;
-			break;
-		case MT_Skeleton:
-			monsterInfo[i].hp = 50;
-			monsterInfo[i].attack = 15;
-			monsterInfo[i].defence = 3;
-			break;
-		default:
-			break;
-		}
-	}
-}
-
-bool EnterBattle(StatInfo* playerInfo, StatInfo* monsterInfo)
-{
-	while (true)
-	{
-		int damage = playerInfo->attack - monsterInfo->defence;
-		if (damage < 0)
-			damage = 0;
-
-		monsterInfo->hp -= damage;
-		if (monsterInfo->hp < 0)
-			monsterInfo->hp = 0;
-
-		PrintStatInfo("Monster", *monsterInfo);
-
-		if (monsterInfo->hp == 0)
-		{
-			PrintMassege("몬스터를 처치했습니다");
-			return true;
-		}
-
-		damage = monsterInfo->attack - playerInfo->defence;
-		if (damage < 0)
-			damage = 0;
-
-		playerInfo->hp -= damage;
-		if (playerInfo->hp < 0)
-			playerInfo->hp = 0;
-
-		PrintStatInfo("Player", *playerInfo);
-
-		if (playerInfo->hp == 0)
-		{
-			PrintMassege("Game Over");
-			return false;
-		}
-	}
+	return 0;
 }
