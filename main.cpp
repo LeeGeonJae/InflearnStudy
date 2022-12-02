@@ -1,160 +1,119 @@
 #include <iostream>
+#include <iomanip>
 
 using namespace std;
 
-// 오늘의 주제 : 연습문제
+// 오늘의 주제 : 연습 문제(달팽이)
 
-// 문제1) 문자열 길이를 출력하는 함수
-int StrLen(const char* str)
+const int MAX = 100;
+int board[MAX][MAX] = {};
+int N;
+
+void PrintBoard()
 {
-	// str이라는 문자열의 길이를 반환
-	int count = 0;
-
-	while (str[count] != '\0')
-		count++;
-
-	return count;
-}
-
-// 문제2) 문자열 복사 함수
-// [H][e][l][l][o]['\0'][][][][][][][][][][][]
-// [H][e][l][l][o]['\0'][][][][][][][][][][][]
-
-// src [ 주소 ]
-char* StrCpy(char* dest, char* src)
-{
-	int i = 0;
-	//for (i = 0; i <= StrLen(src); i++)
-	//{
-	//	dest[i] = src[i];
-	//}
-
-	//while (src[i] != '\0')
-	//{
-	//	dest[i] = src[i];
-	//	i++;
-	//}
-
-	//dest[i] = '\0';
-
-	//return dest;
-
-	char* ret = dest;
-
-	while (*src != '\0')
+	for (int y = 0; y < N; y++)
 	{
-		*dest = *src;
-		dest++;
-		src++;
-	}
-
-	*dest = '\0';
-
-	return ret;
-}
-
-// 문제 3) 문자열 덧붙이는 함수
-// [H][e][l][l][o]['\0'][][][][][][][][][][][]
-// [W][o][r][l][d]['\0'][][][][][][][][][][][]
-char* StrCat(char* dest, char* src)
-{
-	// 배열을 이용한 코드
-	//int i = 0;
-	//int len = StrLen(dest);
-	//while (src[i] != '\0')
-	//{
-	//	dest[i + len] = src[i];
-	//	i++;
-	//}
-
-	//dest[len + i] = '\0';
-	//return dest;
-
-	// 포인터를 이용한 코드
-	char* ret = dest;
-
-	while (*dest != '\0')
-		dest++;
-
-	while (*src != '\0')
-	{
-		*dest = *src;
-		dest++;
-		src++;
-	}
-
-	*dest = '\0';
-	return ret;
-}
-
-
-// 문제 4) 두 문자열을 비교하는 함수
-int StrCmp(char* a, char* b)
-{
-	int i = 0;
-
-	while (a[i] != '\0' || b[i] != '\0')
-	{
-		if (a[i] > b[i])
+		for (int x = 0; x < N; x++)
 		{
-			return 1;
+			cout << setfill('0') << setw(2) << board[y][x] << " ";
 		}
-		if (a[i] < b[i])
-		{
-			return -1;
-		}
-		i++;
+		cout << endl;
 	}
-
-	return 0;
 }
 
-// 문제 5) 문자열을 뒤집는 함수
-void ReverseStr(char* str)
+enum DIR
 {
-	// 2
-	int len = StrLen(str);
+	RIGHT = 0,
+	DOWN = 1,
+	LEFT = 2,
+	UP = 3,
+};
 
-	for (int i = 0; i < len / 2; i++)
-	{
-		int temp = str[i];
-		str[i] = str[len - i - 1];
-		str[len - i - 1] = temp;
-	}
+bool CanGo(int y, int x)
+{
+	if (y < 0 || y >= N)
+		return false;
+	if (x < 0 || x >= N)
+		return false;
+	if (board[y][x] != 0)
+		return false;
+	return true;
 }
 
-#pragma warning(disable: 4996)
+void SetBoard()
+{
+	// 1 2 3 4 5
+	//         6
+	// 
+	int dir = RIGHT;
+	int num = 1;
+	int y = 0;
+	int x = 0;
+	
+	while (true)
+	{
+		board[y][x] = num;
+
+		if (num == N * N)
+			break;
+
+		int nextY;
+		int nextX;
+
+		switch (dir)
+		{
+		case RIGHT:
+			nextY = y;
+			nextX = x + 1;
+			break;
+		case DOWN:
+			nextY = y + 1;
+			nextX = x;
+			break;
+		case LEFT:
+			nextY = y;
+			nextX = x - 1;
+			break;
+		case UP:
+			nextY = y - 1;
+			nextX = x;
+			break;
+		}
+
+		if (CanGo(nextY, nextX))
+		{
+			y = nextY;
+			x = nextX;
+			num++;
+		}
+		else
+		{
+			switch (dir)
+			{
+			case RIGHT:
+				dir = DOWN;
+				break;
+			case DOWN:
+				dir = LEFT;
+				break;
+			case LEFT:
+				dir = UP;
+				break;
+			case UP:
+				dir = RIGHT;
+				break;
+			}
+		}
+	}
+}
 
 int main()
 {
-	const int BUF_SIZE = 100;
+	cin >> N;
 
-	// [H][e][l][l][o]['\0'][][][][][][][][][][][]
-	char a[BUF_SIZE] = "Hello World";
-	char b[BUF_SIZE] = "Hello";
+	SetBoard();
 
-	// 문제 1번 출력 - strlen(a) 문자열 a의 길이
-	//int len = StrLen(a);
-	//cout << len << endl;
-
-	// 문제 2번 출력 - strcpy(b, a) 문자열 b에 a를 복사
-	//StrCpy(b, a);
-	//for (int i = 0; i <= StrLen(b); i++)
-	//	cout << b[i];
-
-	// 문제 3번 출력 - strcat(a, b) 문자열 a의 뒤에 문자열 b를 복사
-	//StrCat(a, b);
-	//for (int i = 0; i <= StrLen(a); i++)
-	//	cout << a[i];
-
-	// 문제 4번 출력 - a가 더 크면 1, b가 더 크면 -1, 둘다 같으면 0
-	//int value = StrCmp(a, b);
-	//cout << value << endl;
-
-	// 문제 5번 출력 - a의 문자열 뒤집기
-	ReverseStr(a);
-	for (int i = 0; i <= strlen(a); i++)
-		cout << a[i];
+	PrintBoard();
 
 	return 0;
 }
