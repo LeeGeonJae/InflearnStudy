@@ -30,7 +30,28 @@ struct StatInfo
 // ~Knight를 생성하면 -> Player의 생성자? Knight의 생성자?
 // -> 솔로몬의 선택 ! 그냥 둘다 호출하자 !
 
-class Player
+// GameObject
+// - Creature
+// -- Player, Monster, Npc, Pet
+// - Projectile
+// -- Arrow, Fireball
+// - Env
+
+// Item
+// - Weapon
+// -- Sword, Bow
+// - Armor
+// -- Helmet, Boots, Armor
+// - Consumable
+// -- Potion, Scroll
+
+class GameObject
+{
+public:
+	int _objectId;
+};
+
+class Player : public GameObject
 {
 public:
 	Player()
