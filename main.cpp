@@ -28,7 +28,7 @@ using namespace std;
 // - 필요할때만 사용하고, 필요없으면 반납할 수 있는!
 // - 그러면서도 (스택과는 다르게) 우리가 생성/소멸 시점을 관리할 수 있는!
 // - 그런 아름다운 메모리 없나? -> HEAP
-// 동적할당과 연관된 함수/연산자 : malloc / free, new, / delete, new[] / delete[]
+// 동적할당과 연관된 함수/연산자 : malloc, free / new, delete / new[] / delete[]
 
 // malloc
 // - 할당할 메모리 크기를 건네준다
@@ -38,8 +38,31 @@ using namespace std;
 // - malloc ( 혹은 기타 calloc, realloc 등의 사촌 ) 을 통해 할당된 영역을 해제
 // - 힙 관리자가 할당/미할당 여부를 구분해서 관리
 
+// new / delete
+// - C++에 추가됨
+// - malloc/free 함수! new/delete는 연산자(operator)
+
+// new[] / delete[]
+// - new가 malloc에 비해 좋긴 한데~ 배열과 같이 N개 데이터를 같이 할당하려면?
+
+// malloc/free vs new/delete
+// - 사용 편의성 -> new/delete 승!
+// - 타입에 상관없이 특정한 크기의 메모리 영역을 할당받으려면? -> malloc/free 승!
+
+// 그런데 둘의 가장 근본적인 중요한 차이는 따로 있다
+// new/delete는 (생성타입이 클래스일 경우) 생성자/소멸자를 호출해준다
+
 class Monster
 {
+public:
+	Monster()
+	{
+		cout << "Monster()" << endl;
+	}
+	~Monster()
+	{
+		cout << "~Monster()" << endl;
+	}
 public:
 	int _hp;
 	int _x;
@@ -67,30 +90,33 @@ int main()
 	// 타고 가면 void 아무것도 없다 ? -> NO
 	// 타고 가면 void 뭐가 있는지 모르겠으니까 너가 적당히 변환해서 사용해라 -> OK
 	void* pointer = malloc(sizeof(Monster));
-	// void* pointer = malloc(12);
-
 	Monster* m1 = (Monster*)pointer;
 	m1->_hp = 100;
 	m1->_x = 1;
 	m1->_y = 1;
-
-	// Heap Overflow
-	// - 유효한 힙 범위를 초과해서 사용하는 문제
-
 	// 만약에 free하지 않으면 메모리 누수
 	free(pointer);
-	pointer = nullptr;
-	m1 = nullptr;
 
-	// Double Free
-	// - 이건 대부분 그냥 크래시만 나고 끝난다
-	//free(pointer);
+	// new / delete
+	Monster* m2 = new Monster;
+	m2->_hp = 100;
+	m2->_x = 2;
+	m2->_y = 2;
+	delete m2;
 
-	// Use-After-Free
-	// - 프로그래머 입장 : OMG 망했다!
-	m1->_hp = 100;
-	m1->_x = 1;
-	m1->_y = 1;
+	Monster* m3 = new Monster[5];
+	// void* pointer = malloc(12*5);
+	// Monster* m3 = (Monster*)pointer;
+	m3->_hp = 200;
+	m3->_x = 2;
+	m3->_y = 3;
+
+	Monster* m4 = (m3 + 1);
+	m4->_hp = 300;
+	m4->_x = 4;
+	m4->_y = 5;
+	delete[] m3;
+
 
 	return 0;
 }
