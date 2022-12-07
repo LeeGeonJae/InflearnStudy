@@ -126,11 +126,11 @@ int main()
 	}
 
 	// ------------- 상속 관계에 있는 클래스 사이의 변환 ----------------
-	// 특징) 자식 -> 부모 OK  /  부모 -> 자식 NO
 	// [1] 상속 관계 클래스의 값 타입 변환
+	// 특징) 자식 -> 부모 OK  /  부모 -> 자식 NO
 	{
-		//Dog dog;
-		//BullDog bulldog = dog;
+		Dog dog;
+		BullDog bulldog = dog;
 
 		BullDog bulldog;
 		Dog dog = bulldog;
@@ -139,13 +139,24 @@ int main()
 	// [2] 상속 관계 클래스의 참조 타입 변환
 	// 특징) 자식 -> 부모 OK  /  부모 -> 자식 (암시적NO) (명시적OK)
 	{
-		//Dog dog;
-		//BullDog& bulldog = (BullDog&)dog;
+		Dog dog;
+		BullDog& bulldog = (BullDog&)dog;
 
 		// [ age, cuteness, french ]
 		BullDog bulldog;
 		Dog& dog = bulldog;
 	}
+	
+	// 결론)
+	// [값 타입 변환] : 진짜 비트열도 바꾸고~ 논리적으로 말이 되게 바꾸는 변환
+	// - 논리적으로 말이 된다? (ex. BullDog -> Dog) OK
+	// - 논리적으로 말이 안 된다 (ex. Dog -> BullDog, Dog -> Knight) 안 됨
+	// [참조 타입 변환] : 비트열은 냅두고 우리의 '관점'만 바꾸는 변환
+	// - 땡깡 부리면(명시적 요구) 해주긴 하는데, 말 안해도 '그냥' (암시적)으로 해주는지는 안전성 여부와 연관이 있음
+	// -- 안전하다 (ex. BullDog -> Dog&) '그냥' (암시적으로) OK
+	// -- 위험하다? (ex. Dog -> BullDog&)
+	// --- 메모리 침범 위험이 있는 경우는 '그냥' (암시적으로) 해주진 않음 (위험하니까)
+	// --- 명시적으로 정말정말 하겠다고 최종 서명을 하면 OK
 
 	return 0;
 }
