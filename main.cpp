@@ -1,24 +1,25 @@
 #include <iostream>
-#include "Game.h"
-#include "Creature.h"
 #include "Player.h"
 
 using namespace std;
 
-// 오늘의 주제 : TextRPG #4
+// 오늘의 주제 : 전방선언
 
 
 int main()
 {
-	srand((unsigned int)time(nullptr));
+	// Player는 몇 바이트?
+	// int 2개 = 2 * 4 = 8바이트 + sizeof(Player*) = 12바이트
 
-	Game game;
-	game.Init();
 
-	while(true)
-	{
-		game.Update();
-	}
+	// Player [ hp ] [ attack ] [ 주소 ]
+	// sizeof(Monster*) = 4 or 8
+
+	Player p1; // 지역변수 (Stack)
+
+	Player* p2 = new Player(); // 동적할당 (Heap)
+	
+	p1._target = p2;
 
 	return 0;
 }

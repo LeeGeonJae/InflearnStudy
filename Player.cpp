@@ -1,11 +1,18 @@
 #include "Player.h"
-#include <iostream>
+#include "Monster.h"
 
-using namespace std;
-
-void Player::PrintInfo()
+void Player::KillMonster()
 {
-	cout << "-----------------------" << endl;
-	cout << "[플레이어 정보]" << "HP : " << _hp << " ATT : " << _attack << " DEF : " << _defence << endl;
-	cout << "-----------------------" << endl;
+	// push push
+	_target2->KillMe();
+
+	//_target2->_hp = 0;
+
+	// [ 주소 ] -> [ [monsterId][hp][defence] ]
+	//(*_target2)._hp = 0;
+}
+
+void Player::KillMonster2()
+{
+	_target2->_hp = 0;
 }
