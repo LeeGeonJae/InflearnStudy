@@ -1,25 +1,26 @@
 #include <iostream>
-#include "Player.h"
 
 using namespace std;
 
-// 오늘의 주제 : 전방선언
+// 오늘의 주제 : 디버깅
 
+void Test2()
+{
+	int b = 0;
+}
+
+void Test1()
+{
+	int a = 5;
+
+	Test2();
+}
 
 int main()
 {
-	// Player는 몇 바이트?
-	// int 2개 = 2 * 4 = 8바이트 + sizeof(Player*) = 12바이트
-
-
-	// Player [ hp ] [ attack ] [ 주소 ]
-	// sizeof(Monster*) = 4 or 8
-
-	Player p1; // 지역변수 (Stack)
-
-	Player* p2 = new Player(); // 동적할당 (Heap)
+	int number = 10;
 	
-	p1._target = p2;
+	Test1();
 
 	return 0;
 }
