@@ -4,90 +4,80 @@ using namespace std;
 
 // 오늘의 주제 : 함수 포인터
 
-int Add(int a, int b)
+// typedef의 진실
+// typedef 왼쪽 오른쪽 -> 오른쪽 (커스텀 타입 정의)
+
+// 정확히는 왼쪽/오른쪽 기준이 아니라
+// [선언 문법]에서 typedef을 앞에다 붙이는 쪽
+class Knight;
+
+typedef int INTEGER;
+typedef int* POINTER;
+typedef int FUNC(int, int);
+typedef int ARRAY[20];
+typedef int (*PFUNC)(int, int); // 함수 포인터
+typedef int(Knight::*PMEMFUNC)(int, int); // 멤버 함수 포인터
+
+int Test(int a, int b)
 {
+	cout << "Test" << endl;
 	return a + b;
 }
 
-int Sub(int a, int b)
+int t(int a, int b)
 {
-	return a - b;
+	cout << "t" << endl;
+	return a + b;
 }
 
-class Item
+class Knight
 {
 public:
-	Item() : _itemId(0) , _rerity(0), _ownerId(0)
-	{
 
+	// 멤버 함수
+	int GetHP(int, int)
+	{
+		cout << "GetHP()" << endl;
+		return _hp;
 	}
 
 public:
-	int _itemId; // 아이템을 구분하기 위한 ID
-	int _rerity; // 희귀도
-	int _ownerId; // 소지자 ID
+	int _hp = 100;
 };
-
-typedef bool(ITEM_SELECTOR)(Item*, int);
-
-Item* FindItem(Item items[], int itemCount, ITEM_SELECTOR* selector, int value)
-{
-	for (int i = 0; i < itemCount; i++)
-	{
-		Item* item = &items[i];
-		if (selector(item, value))
-			return item;
-	}
-
-	return nullptr;
-}
-
-bool IsRareItem(Item* item, int value)
-{
-	return item->_rerity >= value;
-}
-
-bool IsOwnerItem(Item* item, int ownerId)
-{
-	return item->_ownerId == ownerId;
-}
 
 int main()
 {
-	int a = 10;
-
-	// 바구니 주소
-	// pointer[ 주소 ] -> 주소[    ]
-
-	typedef int DATA;
-	
-	// 1) 포인터			*
-	// 2) 변수 이름		pointer
-	// 3) 데이터 타입		int
-	DATA* pointer = &a;
-
-	// 함수
-	typedef int(FUNC_TYPE)(int, int);
-	//using FUNC_TYPE = int(int, int); // 모던 C++에서는 이렇게도 사용한다
-
+	// 함수 포인터
 	// 1) 포인터			*
 	// 2) 변수 이름		fn
 	// 3) 데이터 타입		함수 (인자는 int, int 반환은 int)
-	FUNC_TYPE* fn;
+	//int (*fn)(int, int);
 
-	// 함수 포인터
-	fn = Sub;
 
-	// 함수의 이름은 함수의 시작 주소 (배열과 유사)
-	int result = fn(1, 2); // 기본 문법
-	cout << result << endl;
+	//typedef int(FUNC_TYPE)(int, int);
+	//FUNC_TYPE* fn;
+	PFUNC fn;
+	
+	fn = &Test; // & 생략 가능 (c언어 호환성 때문)
 
-	int result2 = (*fn)(1, 2); // 함수 포인터는 *(접근 연산자) 붙여도 함수 주소!
-	cout << result2 << endl;
+	fn(1, 2);
+	(*fn)(1, 2);
 
-	Item items[10] = {};
-	items[3]._rerity = 2; // RARE
-	FindItem(items, 10, IsRareItem, 100); // 함수 포인터는 다른 함수 인자로 넘겨주고 싶을 때 사용한다
+	// 위 문법으로 [전역 함수 / 정적 함수]만 담을 수 있다 (호출 규약이 동일한 애들)
+	//fn = &Knight::GetHP;
+
+	Test(1,2);
+
+	Knight k1;
+	k1.GetHP(1, 1);
+
+	PMEMFUNC mfn;
+	mfn = &Knight::GetHP;
+	(k1.*mfn)(1, 1);
+
+	Knight* k2 = new Knight();
+	(k2->*mfn)(1, 1);
+	delete k2;
 
 	return 0;
 }
