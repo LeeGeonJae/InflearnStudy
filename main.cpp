@@ -1,69 +1,42 @@
 #include <iostream>
+#include <algorithm>
 
-using namespace std;
+const int ITEM_COUNT = 4;
+const int MAX_WEIGHT = 6;
 
-// 오늘의 주제 : 템플릿 기초
-
-class Knight
-{
-public:
-	// ...
-
-public:
-	int _hp = 100;
+struct Item {
+    int weight;
+    int price;
 };
 
-template<typename T>
-void Print(T a)
-{
-	cout << a << endl;
+bool compareByPrice(const Item& i1, const Item& i2) {
+    return i1.price > i2.price;
 }
 
-// 템플릿 특수화
-template<>
-void Print(Knight a)
-{
-	cout << "Knight !!!!!!!!!!!" << endl;
-	cout << a._hp << endl;
-}
+int main() {
+    Item items[ITEM_COUNT] = {
+        {4, 8},
+        {3, 5},
+        {2, 3},
+        {1, 1}
+    };
 
-template<typename T1, typename T2>
-void Print(T1 a, T2 b)
-{
-	cout << a << " " << b << endl;
-}
+    // Sort the items by price in descending order
+    std::sort(items, items + ITEM_COUNT, compareByPrice);
 
-template<typename T>
-T Add(T a, T b)
-{
-	return a + b;
-}
+    int totalWeight = 0;
+    int totalPrice = 0;
 
-// 연산자 오버로딩 (전역함수 버젼)
-ostream& operator<<(ostream& os, const Knight& k)
-{
-	os << k._hp;
-	return os;
-}
+    // Add items to the bag as long as there is room
+    for (int i = 0; i < ITEM_COUNT; i++) {
+        if (totalWeight + items[i].weight <= MAX_WEIGHT) {
+            totalWeight += items[i].weight;
+            totalPrice += items[i].price;
+        }
+    }
 
-int main()
-{
-	// 템플릿 : 함수나 클래스를 찍어내는 틀
-	// 1) 함수 템플릿
-	// 2) 클래스 템플릿
+    std::cout << "Total weight: " << totalWeight << std::endl;
+    std::cout << "Total price: " << totalPrice << std::endl;
 
-	Print<int>(50);
-	Print(50.0f);
-	Print(50.0);
-	Print("Hello World");
-
-	Print("Hello ", 100);
-
-	int result1 = Add(1, 2);
-	float result2 = Add<float>(1.1f, 2.2f);
-
-	Knight k1;
-	Print(k1);
-
-	return 0;
+    return 0;
 }
