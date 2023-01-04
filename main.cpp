@@ -10,15 +10,15 @@ struct Item {
 };
 
 bool compareByPrice(const Item& i1, const Item& i2) {
-    return i1.price > i2.price;
+    return (float)i1.price / (float)i1.weight > (float)i2.price / (float)i2.weight;
 }
 
 int main() {
     Item items[ITEM_COUNT] = {
-        {4, 8},
-        {3, 5},
-        {2, 3},
-        {1, 1}
+        {4, 6}, // Item 1: A knife weighing 4 is 6 won.
+        {3, 5}, // Item 2: An old item with a weight of 3 for 5 won.
+        {2, 3}, // Item 3: Apple with a weight of 2 for 3 won.
+        {1, 1}  // Item 4: 1 won fork.
     };
 
     // Sort the items by price in descending order
@@ -27,9 +27,9 @@ int main() {
     int totalWeight = 0;
     int totalPrice = 0;
 
-    // Add items to the bag as long as there is room
+    // Add as many copies of each item as possible
     for (int i = 0; i < ITEM_COUNT; i++) {
-        if (totalWeight + items[i].weight <= MAX_WEIGHT) {
+        while (totalWeight + items[i].weight <= MAX_WEIGHT) {
             totalWeight += items[i].weight;
             totalPrice += items[i].price;
         }
