@@ -1,78 +1,47 @@
 #include <iostream>
+#include <cstdlib>
+#include <ctime>
 
-using namespace std;
+const int MAP_WIDTH = 10;
+const int MAP_HEIGHT = 10;
+const int NUM_OBSTACLES = 15;
 
-// 오늘의 주제 : 콜벡 (Callback)
+// Array to store the locations of the obstacles
+int obstacles[NUM_OBSTACLES][2];
 
-class Item
-{
-public:
+// Function to generate the random goal location
+void generateGoal() {
+    int x, y;
+    bool validLocation;
 
-public:
-	int _itemId = 0;
-	int _rarity = 0;
-	int _ownerId = 0;
-};
+    do {
+        // Generate a random location for the goal
+        x = rand() % MAP_WIDTH;
+        y = rand() % MAP_HEIGHT;
 
-class FindByOwnerId
-{
-public:
-	bool operator()(const Item* item)
-	{
-		return (item->_ownerId == _ownerId);
-	}
+        // Check if the location is not an obstacle
+        validLocation = true;
+        for (int i = 0; i < NUM_OBSTACLES; i++) {
+            if (x == obstacles[i][0] && y == obstacles[i][1]) {
+                validLocation = false;
+                break;
+            }
+        }
+    } while (!validLocation);
 
-public:
-	int _ownerId;
-};
-
-class FindByRarity
-{
-public:
-	bool operator()(const Item* item)
-	{
-		return (item->_rarity >= _rarity);
-	}
-
-public:
-	int _rarity;
-};
-
-template<typename T>
-Item* FindItem(Item items[], int itemCount, T selector)
-{
-	for (int i = 0; i < itemCount; i++)
-	{
-		Item* item = &items[i];
-
-		if (selector(item))
-			return item;
-	}
+    // Set the goal location
+    int goal[2] = { x, y };
 }
 
-int main()
-{
-	// 함수 포인터 + 함수 객체 + 템플릿
-	// 콜벡 (Callback)
+int main() {
+    // Seed the random number generator
+    srand(time(0));
 
-	// 게임을 만들 때 이런 콜백의 개념이 자주 등장한다
-	// ex) MoveTesk 실습 등
+    // Generate the obstacles
+    // ...
 
-	// 어떤 상황이 일어나면 -> 이 기능을 호출해줘
-	// ex) UI 스킬 버튼을 누르면 -> 스킬을 쓰는 함수를 호출
+    // Generate the goal location
+    generateGoal();
 
-	Item item[10];
-	item[3]._ownerId = 100;
-	item[8]._rarity = 2;
-
-	FindByOwnerId functor1;
-	functor1._ownerId = 100;
-
-	FindByRarity functor2;
-	functor2._rarity = 1;
-
-	Item* item1 = FindItem(item, 10, functor1);
-	Item* item2 = FindItem(item, 10, functor2);
-
-	return 0;
+    return 0;
 }
