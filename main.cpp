@@ -2,59 +2,125 @@
 #include <vector>
 #include <list>
 #include <deque>
+#include <map>
 
 using namespace std;
 
-// 오늘의 주제 : deque
+// 오늘의 주제 : map
 
-// vector : 동적 배열
-// [              ]
+class Player
+{
+public:
+	Player() : _playerId(0)
+	{
 
-// list : 이중 연결 리스트
-// [ ] <-> [ ] <-> [ ] <-> [ ]
+	}
 
-// deque : double-ended queue 데크
-// [   ]
-// [   ]
-// [   ]
+	Player(int playerId) : _playerId(playerId)
+	{
+
+	}
+
+public:
+	int _playerId;
+};
+
+template<typename T1, typename T2>
+struct Pair
+{
+	T1 t1;
+	T2 t2;
+};
 
 int main()
 {
-	// 시퀀스 컨테이너 (Sequence Container)
-	// 데이터가 삽입 순서대로 나열되는 형태
-	// vector list deque
+	srand(static_cast<unsigned int>(time(nullptr)));
 
-	// vector와 마찬가지로 배열 기반으로 동작
-	// 다만 메모리 할당 정책이 다르다
+	// 연관 컨테이너
 
-	// vector
-	// [ 1 1 1 2 2 ]     ]
+	// map : 균형 이진 트리 (AVL)
+	// - 노드 기반
 
-	// deque
-	// [     3 3 ]
-	// [ 1 1 1 2 ]
-	// [ 2       ]
+	class Node
+	{
+	public:
+		Node* _left;
+		Node* _right;
+		// DATA
+		int _key;
+		Player* _value;
+	};
 
-	vector<int> v(3, 1);
-	deque<int> dq(3, 1);
+	// (Key, Value)
+	map<int, int> m;
 
-	v.push_back(2);
-	v.push_back(2);
-	dq.push_back(2);
-	dq.push_back(2);
+	//pair<map<int, int>::iterator, bool> ok;
+	//ok = m.insert(make_pair(1, 100));
+	//ok = m.insert(make_pair(1, 200));
 
-	dq.push_front(3);
-	dq.push_front(3);
+	//ok.first;
+	//ok.second;
 
-	// - deque의 동작 원리
-	// - 중간 삽입/삭제 ( BAD / BAD )
-	// - 처음/끝 삽입/삭제 ( GOOD / GOOD )
-	// - 임의 접근 ( GOOD )
+	// 10만명
+	for (int i = 0; i < 100000; i++)
+	{
+		m.insert(pair<int, int>(i, i * 100));
+	}
 
-	dq[3] = 10;
-	cout << dq[3] << endl;
+	// 5만명 퇴장
+	for (int i = 0; i < 50000; i++)
+	{
+		int randomValue = rand() % 50000;
 
-	deque<int>::iterator it;
+		//m.erase(m.begin(), m.end());
+
+		// Erase By Key
+		m.erase(randomValue);
+	}
+
+	// Q) ID = 1만인 Player 찾고 싶다!
+	// A) 매우 빠르게 찾을 수 있음
+
+
+
+	// map 순회
+	for (map<int, int>::iterator it = m.begin(); it != m.end(); ++it)
+	{
+		pair<const int, int>& p = *it;
+		int key = (*it).first;
+		int value = it->second;
+
+		//cout << key << " " << value << endl;
+	}
+
+	// 없으면 추가, 있으면 수정
+
+	map<int, int>::iterator findit = m.find(10000);
+	if (findit != m.end())
+	{
+		findit->second = 200;
+	}
+	else
+	{
+		m.insert(make_pair(10000, 200));
+	}
+
+	// 없으면 추가, 있으면 수정 v2
+	m[5] = 500;
+
+	m.clear();
+
+	// [] 연산자 사용할 때 주의
+	// 대입을 하지 않더라도 (Key/Value) 형태의 데이터가 추가된다
+	for (int i = 0; i < 10; i++)
+	{
+		cout << m[i] << endl;
+	}
+
+	// 넣고		(insert, [])
+	// 빼고		(erase)
+	// 찾고		(find, [])
+	// 반복자	(map, iterator) (*it) pair<key, value>&
 
 	return 0;
 }
