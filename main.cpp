@@ -8,7 +8,7 @@
 
 using namespace std;
 
-// 오늘의 주제 : override, final
+// 오늘의 주제 : 우측 참조
 
 class Creature
 {
