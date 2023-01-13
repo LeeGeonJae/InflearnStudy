@@ -8,35 +8,56 @@
 
 using namespace std;
 
-// 오늘의 주제 : using
+// 오늘의 주제 : enum class
 
-typedef vector<int>::iterator VecIt;
-
-typedef __int64 id;
-using id2 = int;
-
-// 1) 직관성
-typedef void (*MyFunc)();
-using MyFunc2 = void(*)();
-
-// 2) 템플릿
-template<typename T>
-using List = std::list<T>;
-
-template<typename T>
-struct List2
+// unscoped enum (범위없는)
+enum PlayerType : char
 {
-	typedef std::list<T> type;
+	PT_None,
+	PT_Knight,
+	PT_Archer,
+	PT_Mage,
+};
+
+enum MonsterType
+{
+	MT_None,
+};
+
+enum class ObjectType
+{
+	Player,
+	Monster,
+	Projectile
+};
+
+enum class ObjectType2
+{
+	Player,
+	Monster,
+	Projectile
 };
 
 int main()
 {
-	List<int> li;
-	li.push_back(1);
-	li.push_back(2);
-	li.push_back(3);
+	// enum class (scoped enum)
+	// 1) 이름공간 관리 (scoped)
+	// 2) 암묵적인 변환 금지
 
-	List2<int>::type li2;
+	double value = PT_Knight;
+	double value2 = static_cast<double>(ObjectType::Player);
+
+	int choice;
+	cin >> choice;
+
+	if (choice == static_cast<int>(ObjectType::Monster))
+	{
+
+	}
+
+	unsigned int bitFlag;
+	bitFlag = (1 << static_cast<int>(ObjectType::Player));
+
 
 	return 0;
 }
