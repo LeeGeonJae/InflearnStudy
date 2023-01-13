@@ -8,82 +8,35 @@
 
 using namespace std;
 
-// 오늘의 주제 : 중괄호 초기화 { }
+// 오늘의 주제 : using
 
-class Knight
+typedef vector<int>::iterator VecIt;
+
+typedef __int64 id;
+using id2 = int;
+
+// 1) 직관성
+typedef void (*MyFunc)();
+using MyFunc2 = void(*)();
+
+// 2) 템플릿
+template<typename T>
+using List = std::list<T>;
+
+template<typename T>
+struct List2
 {
-public:
-	void Test()
-	{
-
-	}
+	typedef std::list<T> type;
 };
-
-Knight* FindKnight()
-{
-	// TODO
-}
-
-void Test(int a)
-{
-	cout << "Test(int)" << endl;
-}
-
-void Test(void* ptr)
-{
-	cout << "Test(*)" << endl;
-}
-
-// NullPtr 구현
-
-class NullPtr
-{
-public:
-	// 그 어떤 타입의 포인터와도 치환 가능
-	template<typename T>
-	operator T* () const
-	{
-		return 0;
-	}
-
-	// 그 어떤 타입의 멤버 포인터와도 치환 가능
-	template<typename C, typename T>
-	operator T C::* () const
-	{
-		return 0;
-	}
-
-private:
-	void operator&() const; // 주소값 &을 막는다
-};
-
-const NullPtr _NullPtr;
 
 int main()
 {
-	int* ptr = NULL; // 0 NULL
+	List<int> li;
+	li.push_back(1);
+	li.push_back(2);
+	li.push_back(3);
 
-	// 1) 오동작
-	Test(0);
-	Test(NULL);
-	Test(_NullPtr);
-
-	// 2) 가독성
-	auto knight = FindKnight();
-	if (knight == _NullPtr)
-	{
-
-	}
-
-	void (Knight::* memFunc)();
-	memFunc = &Knight::Test;
-
-	if (memFunc == _NullPtr)
-	{
-
-	}
-
-	nullptr_t whoami = nullptr;
+	List2<int>::type li2;
 
 	return 0;
 }
