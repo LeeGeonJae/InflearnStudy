@@ -8,71 +8,82 @@
 
 using namespace std;
 
-// 오늘의 주제 : auto
+// 오늘의 주제 : 중괄호 초기화 { }
 
 class Knight
 {
 public:
-	int _hp;
+	void Test()
+	{
+
+	}
 };
 
-template <typename T>
-void Print(T t)
+Knight* FindKnight()
 {
-	cout << t << endl;
+	// TODO
 }
+
+void Test(int a)
+{
+	cout << "Test(int)" << endl;
+}
+
+void Test(void* ptr)
+{
+	cout << "Test(*)" << endl;
+}
+
+// NullPtr 구현
+
+class NullPtr
+{
+public:
+	// 그 어떤 타입의 포인터와도 치환 가능
+	template<typename T>
+	operator T* () const
+	{
+		return 0;
+	}
+
+	// 그 어떤 타입의 멤버 포인터와도 치환 가능
+	template<typename C, typename T>
+	operator T C::* () const
+	{
+		return 0;
+	}
+
+private:
+	void operator&() const; // 주소값 &을 막는다
+};
+
+const NullPtr _NullPtr;
 
 int main()
 {
-	// Modern C++ (C++11)
+	int* ptr = NULL; // 0 NULL
 
-	//int a = 3;
-	//float b = 3.14f;
-	//double c = 1.23;
-	//Knight d = Knight();
-	//const char* e = "rookiss";
+	// 1) 오동작
+	Test(0);
+	Test(NULL);
+	Test(_NullPtr);
 
-	auto a = 3;
-	auto b = 3.14f;
-	auto c = 1.23;
-	auto d = Knight();
-	auto e = "rookiss";
-	
-	// auto는 일종의 조커카드
-	// 형식 연역 (type deduction)
-	// -> 말이 되게 잘 맞춰봐~ (추론)
-	// 추론 규칙은 생각보다 복잡해질 수 있다
-
-	// 주의!
-	// 기본 auto는 const, & 무시 !!!!!!!!!!!
-	int& reference = a;
-	const int cst = a;
-	auto test1 = reference;
-	auto test2 = cst;
-
-	vector<int> v;
-	v.push_back(1);
-	v.push_back(2);
-	v.push_back(3);
-
-	for (vector<int>::size_type i = 0; i < v.size(); i++)
+	// 2) 가독성
+	auto knight = FindKnight();
+	if (knight == _NullPtr)
 	{
-		auto& data = v[i];
-		data = 100;
+
 	}
 
-	// 아무튼 이제 기존의 타입은 잊어버리고 auto만 사용할래요~
-	// NO! (주관적인 생각)
-	// -> 타이핑이 길어지는 경우 OK
-	// -> 가독성을 위해 일반적으로는 놔두는게 좋다
+	void (Knight::* memFunc)();
+	memFunc = &Knight::Test;
 
-	map<int, int> m;
-	auto ok = m.insert(make_pair(1, 100));
-
-	for (auto it = v.begin(); it != v.end(); ++it)
+	if (memFunc == _NullPtr)
 	{
-		cout << *it << endl;
+
 	}
+
+	nullptr_t whoami = nullptr;
 
 	return 0;
 }
